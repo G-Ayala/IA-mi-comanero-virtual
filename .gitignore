@@ -1,0 +1,29 @@
+# Entorno virtual
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Variables de entorno (IMPORTANTE: no subir API keys)
+.env
+.env.local
+
+# Imágenes temporales
+temp.jpg
+*.jpg
+*.png
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

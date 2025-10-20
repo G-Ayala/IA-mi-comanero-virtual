@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA mi compañero virtual</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>IA mi compañero virtual</h1>
+        <p>Captura una foto y la IA te dirá qué ve</p>
+        
+        <!-- Video en vivo de la cámara -->
+        <video id="video" autoplay playsinline></video>
+        
+        <!-- Canvas oculto para capturar el frame -->
+        <canvas id="canvas" style="display:none;"></canvas>
+        
+        <!-- Botones de control -->
+        <div class="buttons">
+            <button id="startCamera" onclick="iniciarCamara()">
+                🎥 Iniciar Cámara
+            </button>
+            <button id="captureBtn" onclick="capturarFoto()" disabled>
+                📷 Capturar Foto
+            </button>
+        </div>
+        
+        <!-- Área para mostrar la foto capturada -->
+        <div id="preview" style="display:none;">
+            <h3>Foto capturada:</h3>
+            <img id="capturedImage" alt="Foto capturada">
+        </div>
+        
+        <!-- Área de loading -->
+        <div id="loading" style="display:none;">
+            <div class="spinner"></div>
+            <p>Analizando imagen...</p>
+        </div>
+        
+        <!-- Área para mostrar el resultado -->
+        <div id="resultado" style="display:none;">
+            <h3>Descripción:</h3>
+            <p id="descripcionTexto"></p>
+            <button onclick="leerEnVozAlta()">🔊 Escuchar</button>
+            <button onclick="nuevaCaptura()">🔄 Nueva Captura</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let stream = null;
+        let descripcionActual = '';
+
+        /**
+         * Inicia la cámara del dispositivo
+         * Solicita permiso al usuario para acceder a la cámara
+         */
+        async function iniciarCamara() {
+            try {
+                // Solicita acceso a la cámara
+                // getUserMedia es la API del navegador para acceder a medios
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment' // Usa cámara trasera en móviles
+                    } 
+                });
+                
+                // Asigna el stream de video al elemento <video>
+                video.srcObject = stream;
+                
+                // Habilita el botón de captura
+                document.getElementById('captureBtn').disabled = false;
+                document.getElementById('startCamera').disabled = true;
+                
+            } catch (err) {
+                // Si hay error (usuario rechaza permiso, etc.)
+                alert('Error al acceder a la cámara: ' + err.message);
+            }
+        }
+
+        /**
+         * Captura un frame del video y lo convierte a imagen
+         */
+        function capturarFoto() {
+            // Ajusta el tamaño del canvas al tamaño del video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Dibuja el frame actual del video en el canvas
+            ctx.drawImage(video, 0, 0);
+            
+            // Convierte el canvas a base64 (formato JPEG, calidad 0.8)
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            // Muestra la imagen capturada
+            document.getElementById('capturedImage').src = imageData;
+            document.getElementById('preview').style.display = 'block';
+            
+            // Detiene la cámara
+            detenerCamara();
+            
+            // Envía la imagen al servidor
+            enviarImagen(imageData);
+        }
+
+        /**
+         * Envía la imagen al backend para análisis
+         */
+        async function enviarImagen(imageData) {
+            // Muestra el indicador de carga
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultado').style.display = 'none';
+            
+            try {
+                // Hace una petición POST al servidor
+                const response = await fetch('/analizar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image: imageData })
+                });
+                
+                // Convierte la respuesta a JSON
+                const data = await response.json();
+                
+                // Oculta el loading
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.status === 'success') {
+                    // Muestra la descripción
+                    descripcionActual = data.descripcion;
+                    document.getElementById('descripcionTexto').textContent = descripcionActual;
+                    document.getElementById('resultado').style.display = 'block';
+                    
+                    // Lee automáticamente en voz alta
+                    leerEnVozAlta();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error al conectar con el servidor: ' + error.message);
+            }
+        }
+
+        /**
+         * Usa la Web Speech API para leer el texto en voz alta
+         * Esta API funciona en el navegador, no requiere servidor
+         */
+        function leerEnVozAlta() {
+            // Detiene cualquier lectura anterior
+            window.speechSynthesis.cancel();
+            
+            // Crea un objeto de síntesis de voz
+            const utterance = new SpeechSynthesisUtterance(descripcionActual);
+            
+            // Configuración de la voz
+            utterance.lang = 'es-ES'; // Idioma español
+            utterance.rate = 0.9;      // Velocidad (0.1 a 10)
+            utterance.pitch = 1;       // Tono (0 a 2)
+            utterance.volume = 1;      // Volumen (0 a 1)
+            
+            // Inicia la lectura
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /**
+         * Detiene la cámara y libera recursos
+         */
+        function detenerCamara() {
+            if (stream) {
+                // Detiene todos los tracks del stream
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+        }
+
+        /**
+         * Reinicia la aplicación para una nueva captura
+         */
+        function nuevaCaptura() {
+            // Oculta elementos
+            document.getElementById('preview').style.display = 'none';
+            document.getElementById('resultado').style.display = 'none';
+            
+            // Rehabilita botones
+            document.getElementById('startCamera').disabled = false;
+            document.getElementById('captureBtn').disabled = true;
+            
+            // Detiene la síntesis de voz
+            window.speechSynthesis.cancel();
+        }
+
+        // Limpieza al cerrar la página
+        window.addEventListener('beforeunload', () => {
+            detenerCamara();
+            window.speechSynthesis.cancel();
+        });
+    </script>
+</body>
+</html>
