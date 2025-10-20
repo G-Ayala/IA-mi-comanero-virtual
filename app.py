@@ -41,7 +41,7 @@ def analizar_imagen(imagen_bytes):
         img
     ])
     
-    # Retornamos solo el texto de la respuesta
+    # Retornamos solo el texto de la respuesta de gemini
     return response.text
 
 
