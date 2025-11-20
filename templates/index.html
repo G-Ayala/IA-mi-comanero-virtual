@@ -11,7 +11,7 @@
         <h1>IA mi compañero virtual</h1>
         <p>Captura una foto y la IA te dirá qué ve</p>
         
-        <!-- Video en vivo de la cámara -->
+        <!-- Video en vivo de la camara -->
         <video id="video" autoplay playsinline></video>
         
         <!-- Canvas oculto para capturar el frame -->
@@ -27,19 +27,19 @@
             </button>
         </div>
         
-        <!-- Área para mostrar la foto capturada -->
+        <!-- Area para mostrar la foto capturada -->
         <div id="preview" style="display:none;">
             <h3>Foto capturada:</h3>
             <img id="capturedImage" alt="Foto capturada">
         </div>
         
-        <!-- Área de loading -->
+        <!-- Area de loading -->
         <div id="loading" style="display:none;">
             <div class="spinner"></div>
             <p>Analizando imagen...</p>
         </div>
         
-        <!-- Área para mostrar el resultado -->
+        <!-- Area para mostrar el resultado -->
         <div id="resultado" style="display:none;">
             <h3>Descripción:</h3>
             <p id="descripcionTexto"></p>
@@ -58,22 +58,22 @@
 
         /**
          * Inicia la cámara del dispositivo
-         * Solicita permiso al usuario para acceder a la cámara
+         * Solicita permiso al usuario para acceder a la camara
          */
         async function iniciarCamara() {
             try {
-                // Solicita acceso a la cámara
+                // Solicita acceso a la camara
                 // getUserMedia es la API del navegador para acceder a medios
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
-                        facingMode: 'environment' // Usa cámara trasera en móviles
+                        facingMode: 'environment' // Usa camara trasera en móviles
                     } 
                 });
                 
                 // Asigna el stream de video al elemento <video>
                 video.srcObject = stream;
                 
-                // Habilita el botón de captura
+                // Habilita el boton de captura
                 document.getElementById('captureBtn').disabled = false;
                 document.getElementById('startCamera').disabled = true;
                 
@@ -101,15 +101,15 @@
             document.getElementById('capturedImage').src = imageData;
             document.getElementById('preview').style.display = 'block';
             
-            // Detiene la cámara
+            // Detiene la camara
             detenerCamara();
             
-            // Envía la imagen al servidor
+            // Envia la imagen al servidor
             enviarImagen(imageData);
         }
 
         /**
-         * Envía la imagen al backend para análisis
+         * Envia la imagen al backend para analisis
          */
         async function enviarImagen(imageData) {
             // Muestra el indicador de carga
@@ -117,7 +117,7 @@
             document.getElementById('resultado').style.display = 'none';
             
             try {
-                // Hace una petición POST al servidor
+                // Hace una peticion POST al servidor
                 const response = await fetch('/analizar', {
                     method: 'POST',
                     headers: {
@@ -133,12 +133,12 @@
                 document.getElementById('loading').style.display = 'none';
                 
                 if (data.status === 'success') {
-                    // Muestra la descripción
+                    // Muestra la descripcion
                     descripcionActual = data.descripcion;
                     document.getElementById('descripcionTexto').textContent = descripcionActual;
                     document.getElementById('resultado').style.display = 'block';
                     
-                    // Lee automáticamente en voz alta
+                    // Lee automaticamente en voz alta
                     leerEnVozAlta();
                 } else {
                     alert('Error: ' + data.error);
@@ -152,16 +152,15 @@
 
         /**
          * Usa la Web Speech API para leer el texto en voz alta
-         * Esta API funciona en el navegador, no requiere servidor
          */
         function leerEnVozAlta() {
             // Detiene cualquier lectura anterior
             window.speechSynthesis.cancel();
             
-            // Crea un objeto de síntesis de voz
+            // Crea un objeto de sintesis de voz
             const utterance = new SpeechSynthesisUtterance(descripcionActual);
             
-            // Configuración de la voz
+            // Configuracion de la voz
             utterance.lang = 'es-ES'; // Idioma español
             utterance.rate = 0.9;      // Velocidad (0.1 a 10)
             utterance.pitch = 1;       // Tono (0 a 2)
@@ -172,7 +171,7 @@
         }
 
         /**
-         * Detiene la cámara y libera recursos
+         * Detiene la camara y libera recursos
          */
         function detenerCamara() {
             if (stream) {
@@ -183,7 +182,7 @@
         }
 
         /**
-         * Reinicia la aplicación para una nueva captura
+         * Reinicia la aplicacion para una nueva captura
          */
         function nuevaCaptura() {
             // Oculta elementos
@@ -194,11 +193,11 @@
             document.getElementById('startCamera').disabled = false;
             document.getElementById('captureBtn').disabled = true;
             
-            // Detiene la síntesis de voz
+            // Detiene la voz
             window.speechSynthesis.cancel();
         }
 
-        // Limpieza al cerrar la página
+        // Limpieza al cerrar la pagina
         window.addEventListener('beforeunload', () => {
             detenerCamara();
             window.speechSynthesis.cancel();
