@@ -1,5 +1,4 @@
-# Importamos Flask y sus utilidades
-# Importamos render_template para renderizar archivos HTML
+# Importamos Flask y sus utilidades, render_template para renderizar archivos HTML
 # Importamos request para recibir datos del frontend
 # Importamos jsonify para convertir datos Python a formato JSON y enviarlos al frontend
 from flask import Flask, render_template, request, jsonify
