@@ -9,7 +9,7 @@ __pycache__/
 *.pyd
 .Python
 
-# Variables de entorno (IMPORTANTE: no subir API keys)
+# Variables de entorno
 .env
 .env.local
 
