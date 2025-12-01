@@ -4,10 +4,9 @@
     box-sizing: border-box;
 }
 
-/* FONDO — Rosa mexicano elegante */
 body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #E4007C;
+    background: #E4007C; /* Rosa mexicano */
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -16,7 +15,7 @@ body {
     color: #222;
 }
 
-/* CONTENEDOR GENERAL */
+/* CONTENEDOR */
 .container {
     display: flex;
     width: 100%;
@@ -27,7 +26,6 @@ body {
     background: #ffffff;
     backdrop-filter: blur(10px);
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 /* PANEL IZQUIERDO */
@@ -51,7 +49,6 @@ body {
     color: #555;
 }
 
-/* VIDEO / FOTO */
 video {
     width: 100%;
     border-radius: 18px;
@@ -68,7 +65,6 @@ video {
     flex-direction: column;
 }
 
-/* TÍTULOS */
 .right-panel h2 {
     font-size: 26px;
     font-weight: 700;
@@ -76,7 +72,7 @@ video {
     color: #222;
 }
 
-/* BOTONES PROFESIONALES */
+/* BOTONES */
 .buttons {
     display: flex;
     flex-direction: column;
@@ -122,7 +118,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* FOTO PREVIEW */
+/* PREVIEW FOTO */
 #preview img {
     max-width: 100%;
     border-radius: 18px;
@@ -146,7 +142,7 @@ button:disabled {
     to { transform: rotate(360deg); }
 }
 
-/* PANEL RESULTADO */
+/* RESULTADO */
 #resultado {
     background: #f1f3f4;
     padding: 25px;
@@ -160,7 +156,7 @@ button:disabled {
     line-height: 1.6;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVO */
 @media (max-width: 900px) {
     .container {
         flex-direction: column;
