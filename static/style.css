@@ -7,7 +7,7 @@
 /* Fondo general accesible */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #1a1a1a; /* Alto contraste para personas con baja visión */
+    background: #E4007C; /* Rosa mexicano */
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -30,12 +30,12 @@ body {
 /* PANEL IZQUIERDO (VIDEO o IMAGEN) */
 .left-panel {
     width: 50%;
-    background: linear-gradient(to bottom right, #b71c1c, #e53935);
+    background: #ffffff;
     padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    color: #fff;
+    color: #000;
 }
 
 .left-panel h1 {
@@ -75,40 +75,41 @@ p {
     color: #555;
 }
 
-/* BOTONES ACCESIBLES CON ÍCONOS ROJOS Y CÁMARA */
+/* BOTONES SOLO ÍCONO */
 .buttons {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
     flex-wrap: wrap;
     margin: 20px 0;
 }
 
 button {
-    padding: 14px 24px;
-    font-size: 18px;
+    width: 65px;
+    height: 65px;
     border: none;
-    border-radius: 10px;
+    border-radius: 50%;
     cursor: pointer;
-    background: #d32f2f; /* Rojo fuerte accesible */
+    background: #b71c1c; /* Rojo accesible */
     color: white;
-    font-weight: 600;
+    font-size: 28px; /* Tamaño del ícono */
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
     transition: all 0.3s ease;
+    padding: 0;
 }
 
-/* ÍCONOS EN BOTONES */
+/* ÍCONO DE CÁMARA */
 button::before {
-    content: "📷"; /* ícono de cámara */
-    font-size: 22px;
+    content: "📷"; 
+    font-size: 30px;
 }
 
 button:hover:not(:disabled) {
-    background: #ff5252;
+    background: #ff0000;
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
 }
 
 button:disabled {
@@ -122,7 +123,7 @@ button:disabled {
     max-width: 100%;
     border-radius: 12px;
     margin: 20px 0;
-    border: 3px solid #e53935;
+    border: 3px solid #b71c1c;
     box-shadow: 0 5px 20px rgba(0,0,0,0.25);
 }
 
@@ -133,7 +134,7 @@ button:disabled {
 
 .spinner {
     border: 4px solid #eee;
-    border-top: 4px solid #d32f2f;
+    border-top: 4px solid #b71c1c;
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -152,7 +153,7 @@ button:disabled {
     padding: 20px;
     border-radius: 12px;
     margin-top: 20px;
-    border-left: 5px solid #d32f2f;
+    border-left: 5px solid #b71c1c;
 }
 
 #descripcionTexto {
@@ -180,7 +181,8 @@ button:disabled {
 
 @media (max-width: 600px) {
     button {
-        font-size: 16px;
-        padding: 12px 18px;
+        width: 55px;
+        height: 55px;
+        font-size: 26px;
     }
 }
