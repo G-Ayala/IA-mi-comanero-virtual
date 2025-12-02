@@ -5,172 +5,342 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #E4007C; /* Rosa mexicano */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    color: #222;
-}
-
-/* CONTENEDOR */
-.container {
-    display: flex;
-    width: 100%;
-    max-width: 1150px;
-    min-height: 650px;
-    border-radius: 25px;
+    font-family: 'Century Gothic', 'AppleGothic', sans-serif;
+    height: 100vh;
     overflow: hidden;
-    background: #ffffff;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    background: #E91E63;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
 }
 
-/* PANEL IZQUIERDO */
-.left-panel {
-    width: 50%;
-    background: #fafafa;
+/* Marco blanco principal */
+.container {
+    background: white;
+    width: 100%;
+    max-width: 1400px;
+    height: 95vh;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     padding: 40px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
 
-.left-panel h1 {
-    font-size: 30px;
-    font-weight: 700;
-    color: #333;
+/* Título superior */
+.header-title {
+    text-align: center;
+    color: #E91E63;
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 30px;
 }
 
-.left-panel p {
-    font-size: 15px;
-    color: #555;
-}
-
-video {
-    width: 100%;
-    border-radius: 18px;
-    background: #000;
-    border: 4px solid #d32f2f;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
-
-/* PANEL DERECHO */
-.right-panel {
-    width: 50%;
-    padding: 45px 40px;
+/* Contenedor principal */
+.main-content {
     display: flex;
-    flex-direction: column;
-}
-
-.right-panel h2 {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    color: #222;
-}
-
-/* BOTONES */
-.buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+    flex: 1;
+    gap: 40px;
     align-items: center;
-    margin: 20px 0 40px;
+    justify-content: center;
 }
 
-button {
-    width: 78px;
-    height: 78px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    background: linear-gradient(145deg, #c62828, #8e0000);
-    color: white;
-    font-size: 36px;
+/* Lado izquierdo - Pantalla de cámara */
+.left-side {
+    flex: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow:
-        0 8px 18px rgba(0, 0, 0, 0.3),
-        inset 0 4px 6px rgba(255,255,255,0.15);
-    transition: all 0.25s ease;
+    height: 100%;
 }
 
-button::before {
-    content: "📷";
-    font-size: 34px;
+.camera-container {
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
 }
 
-button:hover:not(:disabled) {
-    transform: translateY(-5px) scale(1.08);
-    background: linear-gradient(145deg, #ff0000, #b30000);
-    box-shadow:
-        0 10px 25px rgba(255, 0, 0, 0.45),
-        inset 0 4px 6px rgba(255,255,255,0.3);
+.camera-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.camera-info p {
+    color: #333;
+    font-size: 1.2em;
+}
+
+#video {
+    width: 100%;
+    flex: 1;
+    border-radius: 15px;
+    background: #000;
+    object-fit: cover;
+}
+
+#canvas {
+    display: none;
+}
+
+.camera-placeholder {
+    width: 100%;
+    flex: 1;
+    background: #000;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5em;
+    color: #666;
+}
+
+/* Lado derecho - Botones de control */
+.right-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: stretch;
+    justify-content: center;
+    max-width: 350px;
+    height: 100%;
+}
+
+button {
+    width: 100%;
+    padding: 25px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Century Gothic', 'AppleGothic', sans-serif;
+    text-transform: none;
+}
+
+#startCamera {
+    background: #FF0000;
+    color: white;
+    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+}
+
+#startCamera:hover:not(:disabled) {
+    background: #CC0000;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+}
+
+#captureBtn {
+    background: #FF0000;
+    color: white;
+    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+}
+
+#captureBtn:hover:not(:disabled) {
+    background: #CC0000;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
 }
 
 button:disabled {
-    background: #bbb;
-    box-shadow: none;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
-/* PREVIEW FOTO */
-#preview img {
-    max-width: 100%;
-    border-radius: 18px;
-    margin: 20px 0;
-    border: 4px solid #c62828;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+/* Área de preview */
+#preview {
+    margin-top: 20px;
 }
 
-/* SPINNER */
+#preview h3 {
+    color: #E91E63;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+}
+
+#capturedImage {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    margin-bottom: 15px;
+}
+
+/* Loading spinner */
+#loading {
+    text-align: center;
+    padding: 20px;
+}
+
 .spinner {
-    border: 4px solid #eee;
-    border-top: 4px solid #c62828;
+    border: 4px solid rgba(233, 30, 99, 0.2);
+    border-top: 4px solid #E91E63;
     border-radius: 50%;
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     animation: spin 1s linear infinite;
-    margin: 20px auto;
+    margin: 0 auto 15px;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* RESULTADO */
+#loading p {
+    color: #E91E63;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Área de resultado */
 #resultado {
-    background: #f1f3f4;
-    padding: 25px;
-    border-radius: 16px;
-    border-left: 6px solid #c62828;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+#resultado h3 {
+    color: #E91E63;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
 }
 
 #descripcionTexto {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 15px;
     color: #333;
     line-height: 1.6;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    font-size: 1.05em;
 }
 
-/* RESPONSIVO */
-@media (max-width: 900px) {
+#resultado button {
+    margin-top: 10px;
+}
+
+#resultado button:first-of-type {
+    background: #FF0000;
+    color: white;
+    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+}
+
+#resultado button:first-of-type:hover {
+    background: #CC0000;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+}
+
+#resultado button:last-of-type {
+    background: #E91E63;
+    color: white;
+    box-shadow: 0 5px 20px rgba(233, 30, 99, 0.4);
+}
+
+#resultado button:last-of-type:hover {
+    background: #C2185B;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(233, 30, 99, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
     .container {
+        padding: 30px;
+    }
+
+    .main-content {
         flex-direction: column;
+        gap: 30px;
+    }
+
+    .left-side, .right-side {
+        flex: none;
+        width: 100%;
+        max-width: none;
         height: auto;
     }
-    .left-panel, .right-panel {
-        width: 100%;
+
+    .camera-container {
+        height: 400px;
+    }
+
+    .right-side {
+        flex-direction: row;
+        justify-content: center;
+        max-width: none;
+        gap: 20px;
+    }
+
+    .right-side > button {
+        max-width: 300px;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 20px;
+        height: auto;
+    }
+
+    .header-title {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .main-content {
+        gap: 20px;
+    }
+
+    .camera-container {
+        padding: 20px;
+        height: 350px;
+    }
+
+    .camera-info p {
+        font-size: 1em;
+    }
+
+    .right-side {
+        flex-direction: column;
+        gap: 15px;
+    }
+
     button {
-        width: 65px;
-        height: 65px;
-        font-size: 28px;
+        padding: 18px 25px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-title {
+        font-size: 1.5em;
+    }
+
+    .camera-container {
+        height: 280px;
+    }
+
+    button {
+        padding: 15px 20px;
+        font-size: 1em;
     }
 }
