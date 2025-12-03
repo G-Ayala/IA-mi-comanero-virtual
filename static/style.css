@@ -136,7 +136,7 @@ button:disabled {
 
 /* Preview */
 #preview {
-    margin-top: 30px;
+    margin-top: 50px;
     text-align: center;
 }
 
@@ -162,20 +162,16 @@ button:disabled {
 #resultado {
     text-align: center;
     color: white;
-    max-width: 500px;
+    max-width: 600px;
+    margin-top: 20px;
 }
 
-#resultado h3 {
-    margin-bottom: 15px;
+/* Contenedor de botones del resultado */
+.resultado-botones {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
 }
-
-#descripcionTexto {
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
 /* Spinner */
 .spinner {
     border: 2px solid #f3f3f3;

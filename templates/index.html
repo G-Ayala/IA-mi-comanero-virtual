@@ -28,8 +28,6 @@
             <button id="captureBtn" onclick="capturarFoto()" disabled>
                 📷 
             </button>
-            <br>
-            <br>
         </div>
     </div>
         
@@ -49,10 +47,10 @@
     <div id="resultado" style="display:none;">
         <!--<h3>Descripción:</h3>
         <p id="descripcionTexto"></p>-->
-        <button onclick="leerEnVozAlta()">🔊 </button>
-        <br>
-        <br>
-        <button onclick="nuevaCaptura()">🔄</button>
+        <div class="resultado-botones">
+            <button onclick="leerEnVozAlta()">🔊</button>
+            <button onclick="nuevaCaptura()">🔄</button>
+        </div>
     </div>
 
     <script>
