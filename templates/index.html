@@ -7,10 +7,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
+    <!-- NUEVO: Header fuera del container -->
+    <div class="header-content">
         <h1>IA mi compañero visual</h1>
         <p>Captura una foto y la IA te dirá qué ve</p>
-        
+    </div>
+
+    <div class="container">
         <!-- Video en vivo de la camara -->
         <video id="video" autoplay playsinline></video>
         
@@ -20,34 +23,33 @@
         <!-- Botones de control -->
         <div class="buttons">
             <button id="startCamera" onclick="iniciarCamara()">
-                🎥 Iniciar Cámara
+                Iniciar Cámara
             </button>
-            <br>
             <button id="captureBtn" onclick="capturarFoto()" disabled>
-                📷 Capturar Foto
+                📷 
             </button>
         </div>
+    </div>
         
-        <!-- Area para mostrar la foto capturada -->
-        <div id="preview" style="display:none;">
-            <h3>Foto capturada:</h3>
-            <img id="capturedImage" alt="Foto capturada">
-        </div>
-        
-        <!-- Area de loading -->
-        <div id="loading" style="display:none;">
-            <div class="spinner"></div>
-            <p>Analizando imagen...</p>
-        </div>
-        
-        <!-- Area para mostrar el resultado -->
-        <div id="resultado" style="display:none;">
-            <h3>Descripción:</h3>
-            <p id="descripcionTexto"></p>
-            <button onclick="leerEnVozAlta()">🔊 Escuchar</button>
-            <br>
-            <button onclick="nuevaCaptura()">🔄 Nueva Captura</button>
-        </div>
+    <!-- Area para mostrar la foto capturada -->
+    <div id="preview" style="display:none;">
+        <h3>Foto capturada:</h3>
+        <img id="capturedImage" alt="Foto capturada">
+    </div>
+    
+    <!-- Area de loading -->
+    <div id="loading" style="display:none;">
+        <div class="spinner"></div>
+        <p>Analizando imagen...</p>
+    </div>
+    
+    <!-- Area para mostrar el resultado -->
+    <div id="resultado" style="display:none;">
+        <h3>Descripción:</h3>
+        <p id="descripcionTexto"></p>
+        <button onclick="leerEnVozAlta()">🔊 </button>
+        <br>
+        <button onclick="nuevaCaptura()">🔄</button>
     </div>
 
     <script>
