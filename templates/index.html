@@ -4,10 +4,367 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IA mi compañero visual</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* -----------------------------------------
+           TIPOGRAFÍA GLOBAL
+        ------------------------------------------ */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* Estilos Globales y de Fondo */ 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, #292b51 0%, #a32e83 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 140px 20px 100px 20px;
+            gap: 30px;
+            position: relative;
+        }
+
+        /* Franja superior estilo burbuja */
+        .franja-superior {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 110px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 0 0 50% 50% / 0 0 35px 35px;
+            box-shadow: 
+                0 4px 20px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 8px 32px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .franja-superior.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        /* Franja inferior estilo burbuja */
+        .franja-inferior {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+            box-shadow: 
+                0 -4px 20px rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.3),
+                0 -8px 32px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .franja-inferior.hidden {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+
+        /* Encabezado */
+        .header-content {
+            text-align: center;
+            color: white;
+            margin-bottom: 0;
+            order: -1;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .header-content.hidden {
+            transform: translate(-50%, -100px);
+            opacity: 0;
+        }
+
+        .header-content h1 {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 
+                0 0 10px rgba(0,0,0,0.8),
+                0 2px 4px rgba(0,0,0,0.6),
+                0 0 20px rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+        }
+
+        .header-content p {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+            text-shadow: 
+                0 0 8px rgba(0,0,0,0.8),
+                0 2px 4px rgba(0,0,0,0.6),
+                0 0 15px rgba(255,255,255,0.2);
+            letter-spacing: 0.5px;
+        }
+
+        /* Círculo contenedor */
+        .container {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            position: relative;
+            z-index: 150;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 300% 300%;
+            animation: gradient-shift 4s ease infinite;
+            margin: 0;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Aura */
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe, #000000);
+            background-size: 400% 400%;
+            animation: aura-pulse 3s ease-in-out infinite;
+            filter: blur(30px);
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        @keyframes aura-pulse {
+            0%, 100% {
+                background-position: 0% 50%;
+                transform: scale(1);
+            }
+            50% {
+                background-position: 100% 50%;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Video */
+        video {
+            width: 310px;
+            height: 310px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #000;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Botones */
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .buttons.hidden {
+            transform: translate(-50%, 100px);
+            opacity: 0;
+        }
+
+        button {
+            padding: 14px 24px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif !important;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            cursor: pointer;
+            background: #DC143C !important;
+            color: white;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button svg {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+
+        button:hover:not(:disabled) {
+            background: #FF0000 !important;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        button:disabled {
+            background: #FFB6C1 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Preview */
+        #preview {
+            margin-top: 50px;
+            text-align: center;
+            z-index: 150;
+        }
+
+        #preview h3 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        #preview img {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Loading */
+        #loading {
+            text-align: center;
+            color: white;
+            z-index: 150;
+        }
+
+        #loading p {
+            font-size: 22px;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Resultado */
+        #resultado {
+            text-align: center;
+            color: white;
+            max-width: 600px;
+            margin-top: 20px;
+            z-index: 150;
+        }
+
+        #resultado h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Botones de resultado */
+        .resultado-botones {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+        }
+
+        /* Spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 120px 20px 100px 20px;
+            }
+            
+            .franja-superior {
+                height: 100px;
+            }
+            
+            .franja-inferior {
+                height: 80px;
+            }
+            
+            .header-content {
+                top: 18px;
+            }
+            
+            .header-content h1 {
+                font-size: 26px;
+            }
+            .header-content p {
+                font-size: 16px;
+            }
+            .container {
+                width: 280px;
+                height: 280px;
+            }
+            video {
+                width: 240px;
+                height: 240px;
+            }
+            .buttons,
+            .resultado-botones {
+                bottom: 18px;
+                gap: 15px;
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 16px;
+                min-width: 100px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- NUEVO: Header fuera del container -->
+    <!-- Franja superior -->
+    <div class="franja-superior"></div>
+
+    <!-- Header fuera del container -->
     <div class="header-content">
         <h1>IA mi compañero visual</h1>
         <p>Captura una foto y la IA te dirá qué ve</p>
@@ -23,13 +380,22 @@
         <!-- Botones de control -->
         <div class="buttons">
             <button id="startCamera" onclick="iniciarCamara()">
-                Iniciar Cámara
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
             </button>
             <button id="captureBtn" onclick="capturarFoto()" disabled>
-                📷 
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
             </button>
         </div>
     </div>
+
+    <!-- Franja inferior -->
+    <div class="franja-inferior"></div>
         
     <!-- Area para mostrar la foto capturada -->
     <div id="preview" style="display:none;">
@@ -45,84 +411,89 @@
     
     <!-- Area para mostrar el resultado -->
     <div id="resultado" style="display:none;">
-        <!--<h3>Descripción:</h3>
-        <p id="descripcionTexto"></p>-->
         <div class="resultado-botones">
-            <button onclick="leerEnVozAlta()">🔊</button>
-            <button onclick="nuevaCaptura()">🔄</button>
+            <button onclick="leerEnVozAlta()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+            </button>
+            <button onclick="nuevaCaptura()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+            </button>
         </div>
     </div>
 
     <script>
-        // Variables globales
         let video = document.getElementById('video');
         let canvas = document.getElementById('canvas');
         let ctx = canvas.getContext('2d');
         let stream = null;
         let descripcionActual = '';
+        let lastScrollY = window.scrollY;
 
-        /**
-         * Inicia la cámara del dispositivo
-         * Solicita permiso al usuario para acceder a la camara
-         */
+        // Detección de scroll para ocultar/mostrar elementos
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const header = document.querySelector('.header-content');
+            const franjaSuperior = document.querySelector('.franja-superior');
+            const franjaInferior = document.querySelector('.franja-inferior');
+            const buttons = document.querySelector('.buttons');
+            
+            if (currentScrollY > 50) {
+                header.classList.add('hidden');
+                franjaSuperior.classList.add('hidden');
+                franjaInferior.classList.add('hidden');
+                buttons.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+                franjaSuperior.classList.remove('hidden');
+                franjaInferior.classList.remove('hidden');
+                buttons.classList.remove('hidden');
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+
         async function iniciarCamara() {
             try {
-                // Solicita acceso a la camara
-                // getUserMedia es la API del navegador para acceder a medios
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
-                        facingMode: 'environment' // Usa camara trasera en móviles
+                        facingMode: 'environment'
                     } 
                 });
                 
-                // Asigna el stream de video al elemento <video>
                 video.srcObject = stream;
-                
-                // Habilita el boton de captura
                 document.getElementById('captureBtn').disabled = false;
                 document.getElementById('startCamera').disabled = true;
                 
             } catch (err) {
-                // Si hay error (usuario rechaza permiso, etc.)
                 alert('Error al acceder a la cámara: ' + err.message);
             }
         }
 
-        /**
-         * Captura un frame del video y lo convierte a imagen
-         */
         function capturarFoto() {
-            // Ajusta el tamaño del canvas al tamaño del video
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            
-            // Dibuja el frame actual del video en el canvas
             ctx.drawImage(video, 0, 0);
-            
-            // Convierte el canvas a base64 (formato JPEG, calidad 0.8)
             const imageData = canvas.toDataURL('image/jpeg', 0.8);
             
-            // Muestra la imagen capturada
             document.getElementById('capturedImage').src = imageData;
             document.getElementById('preview').style.display = 'block';
-            
-            // Detiene la camara
             detenerCamara();
-            
-            // Envia la imagen al servidor
             enviarImagen(imageData);
         }
 
-        /**
-         * Envia la imagen al backend para analisis
-         */
         async function enviarImagen(imageData) {
-            // Muestra el indicador de carga
             document.getElementById('loading').style.display = 'block';
             document.getElementById('resultado').style.display = 'none';
             
             try {
-                // Hace una peticion POST al servidor
                 const response = await fetch('/analizar', {
                     method: 'POST',
                     headers: {
@@ -131,19 +502,12 @@
                     body: JSON.stringify({ image: imageData })
                 });
                 
-                // Convierte la respuesta a JSON
                 const data = await response.json();
-                
-                // Oculta el loading
                 document.getElementById('loading').style.display = 'none';
                 
                 if (data.status === 'success') {
-                    // Muestra la descripcion
                     descripcionActual = data.descripcion;
-                    //document.getElementById('descripcionTexto').textContent = descripcionActual;
                     document.getElementById('resultado').style.display = 'block';
-                    
-                    // Lee automaticamente en voz alta
                     leerEnVozAlta();
                 } else {
                     alert('Error: ' + data.error);
@@ -155,54 +519,31 @@
             }
         }
 
-        /**
-         * Usa la Web Speech API para leer el texto en voz alta
-         */
         function leerEnVozAlta() {
-            // Detiene cualquier lectura anterior
             window.speechSynthesis.cancel();
-            
-            // Crea un objeto de sintesis de voz
             const utterance = new SpeechSynthesisUtterance(descripcionActual);
-            
-            // Configuracion de la voz
-            utterance.lang = 'es-ES'; // Idioma español
-            utterance.rate = 0.9;      // Velocidad (0.1 a 10)
-            utterance.pitch = 1;       // Tono (0 a 2)
-            utterance.volume = 1;      // Volumen (0 a 1)
-            
-            // Inicia la lectura
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
             window.speechSynthesis.speak(utterance);
         }
 
-        /**
-         * Detiene la camara y libera recursos
-         */
         function detenerCamara() {
             if (stream) {
-                // Detiene todos los tracks del stream
                 stream.getTracks().forEach(track => track.stop());
                 video.srcObject = null;
             }
         }
 
-        /**
-         * Reinicia la aplicacion para una nueva captura
-         */
         function nuevaCaptura() {
-            // Oculta elementos
             document.getElementById('preview').style.display = 'none';
             document.getElementById('resultado').style.display = 'none';
-            
-            // Rehabilita botones
             document.getElementById('startCamera').disabled = false;
             document.getElementById('captureBtn').disabled = true;
-            
-            // Detiene la voz
             window.speechSynthesis.cancel();
         }
 
-        // Limpieza al cerrar la pagina
         window.addEventListener('beforeunload', () => {
             detenerCamara();
             window.speechSynthesis.cancel();
